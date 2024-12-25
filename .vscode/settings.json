@@ -1,0 +1,30 @@
+{
+    "nix.enableLanguageServer": true,
+    "nix.serverPath": "nil",
+    "nix.serverSettings": {
+        "nil": {
+            "formatting": {
+                "command": [
+                    "alejandra"
+                ]
+            }
+        }
+    },
+    "cSpell.words": [
+        "chinaz",
+        "connectproto",
+        "connectrpc",
+        "emptypb",
+        "goflags",
+        "grpcgateway",
+        "grpcreflect",
+        "Httpx",
+        "openapiv",
+        "protobuf",
+        "protojson",
+        "sentryecho",
+        "timestamppb",
+        "unauthor",
+        "vulbox"
+    ]
+}

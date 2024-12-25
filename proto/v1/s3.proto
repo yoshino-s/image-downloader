@@ -1,0 +1,22 @@
+syntax = "proto3";
+package yoshino_s.image_downloader.v1;
+
+
+option go_package = "github.com/yoshino-s/image-downloader/gen/v1";
+
+message DownloadRequest {
+  string url = 1;
+  map<string, string> headers = 2;
+  optional int32 timeout = 3;
+  bool skip_ssl_verify = 4;
+
+  string key = 5;
+}
+
+message DownloadResponse {
+  string url = 1;
+}
+
+service ImageService {
+  rpc Download(DownloadRequest) returns (DownloadResponse);
+}
