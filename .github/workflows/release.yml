@@ -20,6 +20,7 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: stable
+      - uses: ko-build/setup-ko@v0.6
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v6
         with:
