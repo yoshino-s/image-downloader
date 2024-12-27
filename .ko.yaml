@@ -1,0 +1,13 @@
+builds:
+  - id: ko-image
+    main: .
+    base_image: alpine:3.20.3
+    ldflags:
+      - "-X github.com/yoshino-s/go-framework/common.Version=snapshot"
+    tags:
+      - snapshot
+      - '{{ Git.FullCommit }}'
+    sbom: spdx
+    bare: true
+    preserve_import_paths: false
+    base_import_paths: false

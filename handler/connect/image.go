@@ -45,7 +45,9 @@ func (s ImageService) Download(ctx context.Context, req *connect.Request[v1.Down
 		return nil, err
 	}
 	defer resp.Body.Close()
-	if url, err := s.s3.UploadStream(ctx, req.Msg.Key, resp.Body, resp.ContentLength, minio.PutObjectOptions{}); err != nil {
+	if url, err := s.s3.UploadStream(ctx, req.Msg.Key, resp.Body, resp.ContentLength, minio.PutObjectOptions{
+		ContentType: resp.Header.Get("Content-Type"),
+	}); err != nil {
 		return nil, err
 	} else {
 		return &connect.Response[v1.DownloadResponse]{
