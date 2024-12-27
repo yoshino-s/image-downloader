@@ -20,6 +20,7 @@ type config struct {
 	Bucket                    string        `mapstructure:"bucket"`
 	PresignedGetObjectExpires time.Duration `mapstructure:"presigned_get_object_expires"`
 	Public                    bool          `mapstructure:"public"`
+	AccelerateEndpoint        string        `mapstructure:"accelerate_endpoint"`
 }
 
 func (c *config) Register(set *pflag.FlagSet) {
@@ -31,6 +32,7 @@ func (c *config) Register(set *pflag.FlagSet) {
 	set.String("s3.bucket", "", "s3 bucket")
 	set.Duration("s3.presigned_get_object_expires", 7*24*time.Hour, "s3 presigned get object expires")
 	set.Bool("s3.public", false, "s3 public")
+	set.String("s3.accelerate_endpoint", "", "s3 accelerate endpoint")
 
 	common.MustNoError(viper.BindPFlags(set))
 	configuration.Register(c)

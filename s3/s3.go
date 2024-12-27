@@ -70,5 +70,13 @@ func (s *S3) GetUrl(ctx context.Context, bucket, key string) (*url.URL, error) {
 	if s.config.Public {
 		u.RawQuery = ""
 	}
+	if s.config.AccelerateEndpoint != "" {
+		accelerateEndpoint, err := url.Parse(s.config.AccelerateEndpoint)
+		if err != nil {
+			return nil, err
+		}
+		u.Host = accelerateEndpoint.Host
+		u.Scheme = accelerateEndpoint.Scheme
+	}
 	return u, err
 }
