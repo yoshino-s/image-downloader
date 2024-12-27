@@ -29,4 +29,5 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Run Ko
-        run: ko build
+        run: |
+          ko build --bare --sbom spdx --tags snapshot,${{ github.sha }}
