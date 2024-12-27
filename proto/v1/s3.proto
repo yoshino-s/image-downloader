@@ -17,6 +17,16 @@ message DownloadResponse {
   string url = 1;
 }
 
+message HeadRequest {
+  string key = 1;
+}
+
+message HeadResponse {
+  bool exists = 1;
+  string url = 2;
+}
+
 service ImageService {
   rpc Download(DownloadRequest) returns (DownloadResponse);
+  rpc Head(HeadRequest) returns (HeadResponse);
 }

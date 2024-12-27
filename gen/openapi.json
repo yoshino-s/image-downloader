@@ -59,6 +59,64 @@
           }
         }
       }
+    },
+    "/yoshino_s.image_downloader.v1.ImageService/Head": {
+      "post": {
+        "tags": [
+          "yoshino_s.image_downloader.v1.ImageService"
+        ],
+        "summary": "Head",
+        "operationId": "yoshino_s.image_downloader.v1.ImageService.Head",
+        "parameters": [
+          {
+            "name": "Connect-Protocol-Version",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/connect-protocol-version"
+            }
+          },
+          {
+            "name": "Connect-Timeout-Ms",
+            "in": "header",
+            "schema": {
+              "$ref": "#/components/schemas/connect-timeout-header"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/yoshino_s.image_downloader.v1.HeadRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/connect.error"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/yoshino_s.image_downloader.v1.HeadResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -159,6 +217,32 @@
           }
         },
         "title": "DownloadResponse",
+        "additionalProperties": false
+      },
+      "yoshino_s.image_downloader.v1.HeadRequest": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "key"
+          }
+        },
+        "title": "HeadRequest",
+        "additionalProperties": false
+      },
+      "yoshino_s.image_downloader.v1.HeadResponse": {
+        "type": "object",
+        "properties": {
+          "exists": {
+            "type": "boolean",
+            "title": "exists"
+          },
+          "url": {
+            "type": "string",
+            "title": "url"
+          }
+        },
+        "title": "HeadResponse",
         "additionalProperties": false
       },
       "connect-protocol-version": {

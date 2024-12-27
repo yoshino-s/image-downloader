@@ -26,7 +26,7 @@ func (s *ImageService) SetS3(s3 *s3.S3) {
 	s.s3 = s3
 }
 
-func (s ImageService) Download(ctx context.Context, req *connect.Request[v1.DownloadRequest]) (*connect.Response[v1.DownloadResponse], error) {
+func (s *ImageService) Download(ctx context.Context, req *connect.Request[v1.DownloadRequest]) (*connect.Response[v1.DownloadResponse], error) {
 	client := &http.Client{
 		Transport: &http.Transport{
 			TLSClientConfig: &tls.Config{InsecureSkipVerify: req.Msg.SkipSslVerify},
@@ -57,4 +57,22 @@ func (s ImageService) Download(ctx context.Context, req *connect.Request[v1.Down
 		}, nil
 	}
 
+}
+
+func (s *ImageService) Head(ctx context.Context, req *connect.Request[v1.HeadRequest]) (*connect.Response[v1.HeadResponse], error) {
+	if url, err := s.s3.StatObject(ctx, req.Msg.Key, minio.StatObjectOptions{}); err != nil {
+		return nil, err
+	} else {
+		var u string
+		if url != nil {
+			u = url.String()
+		}
+
+		return &connect.Response[v1.HeadResponse]{
+			Msg: &v1.HeadResponse{
+				Exists: url != nil,
+				Url:    u,
+			},
+		}, nil
+	}
 }

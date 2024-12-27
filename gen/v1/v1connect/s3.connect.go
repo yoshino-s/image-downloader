@@ -35,17 +35,21 @@ const (
 const (
 	// ImageServiceDownloadProcedure is the fully-qualified name of the ImageService's Download RPC.
 	ImageServiceDownloadProcedure = "/yoshino_s.image_downloader.v1.ImageService/Download"
+	// ImageServiceHeadProcedure is the fully-qualified name of the ImageService's Head RPC.
+	ImageServiceHeadProcedure = "/yoshino_s.image_downloader.v1.ImageService/Head"
 )
 
 // These variables are the protoreflect.Descriptor objects for the RPCs defined in this package.
 var (
 	imageServiceServiceDescriptor        = v1.File_v1_s3_proto.Services().ByName("ImageService")
 	imageServiceDownloadMethodDescriptor = imageServiceServiceDescriptor.Methods().ByName("Download")
+	imageServiceHeadMethodDescriptor     = imageServiceServiceDescriptor.Methods().ByName("Head")
 )
 
 // ImageServiceClient is a client for the yoshino_s.image_downloader.v1.ImageService service.
 type ImageServiceClient interface {
 	Download(context.Context, *connect.Request[v1.DownloadRequest]) (*connect.Response[v1.DownloadResponse], error)
+	Head(context.Context, *connect.Request[v1.HeadRequest]) (*connect.Response[v1.HeadResponse], error)
 }
 
 // NewImageServiceClient constructs a client for the yoshino_s.image_downloader.v1.ImageService
@@ -64,12 +68,19 @@ func NewImageServiceClient(httpClient connect.HTTPClient, baseURL string, opts .
 			connect.WithSchema(imageServiceDownloadMethodDescriptor),
 			connect.WithClientOptions(opts...),
 		),
+		head: connect.NewClient[v1.HeadRequest, v1.HeadResponse](
+			httpClient,
+			baseURL+ImageServiceHeadProcedure,
+			connect.WithSchema(imageServiceHeadMethodDescriptor),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
 // imageServiceClient implements ImageServiceClient.
 type imageServiceClient struct {
 	download *connect.Client[v1.DownloadRequest, v1.DownloadResponse]
+	head     *connect.Client[v1.HeadRequest, v1.HeadResponse]
 }
 
 // Download calls yoshino_s.image_downloader.v1.ImageService.Download.
@@ -77,10 +88,16 @@ func (c *imageServiceClient) Download(ctx context.Context, req *connect.Request[
 	return c.download.CallUnary(ctx, req)
 }
 
+// Head calls yoshino_s.image_downloader.v1.ImageService.Head.
+func (c *imageServiceClient) Head(ctx context.Context, req *connect.Request[v1.HeadRequest]) (*connect.Response[v1.HeadResponse], error) {
+	return c.head.CallUnary(ctx, req)
+}
+
 // ImageServiceHandler is an implementation of the yoshino_s.image_downloader.v1.ImageService
 // service.
 type ImageServiceHandler interface {
 	Download(context.Context, *connect.Request[v1.DownloadRequest]) (*connect.Response[v1.DownloadResponse], error)
+	Head(context.Context, *connect.Request[v1.HeadRequest]) (*connect.Response[v1.HeadResponse], error)
 }
 
 // NewImageServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -95,10 +112,18 @@ func NewImageServiceHandler(svc ImageServiceHandler, opts ...connect.HandlerOpti
 		connect.WithSchema(imageServiceDownloadMethodDescriptor),
 		connect.WithHandlerOptions(opts...),
 	)
+	imageServiceHeadHandler := connect.NewUnaryHandler(
+		ImageServiceHeadProcedure,
+		svc.Head,
+		connect.WithSchema(imageServiceHeadMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/yoshino_s.image_downloader.v1.ImageService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case ImageServiceDownloadProcedure:
 			imageServiceDownloadHandler.ServeHTTP(w, r)
+		case ImageServiceHeadProcedure:
+			imageServiceHeadHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -110,4 +135,8 @@ type UnimplementedImageServiceHandler struct{}
 
 func (UnimplementedImageServiceHandler) Download(context.Context, *connect.Request[v1.DownloadRequest]) (*connect.Response[v1.DownloadResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("yoshino_s.image_downloader.v1.ImageService.Download is not implemented"))
+}
+
+func (UnimplementedImageServiceHandler) Head(context.Context, *connect.Request[v1.HeadRequest]) (*connect.Response[v1.HeadResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("yoshino_s.image_downloader.v1.ImageService.Head is not implemented"))
 }
